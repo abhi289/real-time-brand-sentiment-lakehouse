@@ -1,0 +1,266 @@
+{
+  "datasets": [
+    {
+      "name": "98772284",
+      "displayName": "Brand Sentiment Summary",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT * FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/gold_brand_sentiment_summary`\n",
+        "ORDER BY brand, sentiment"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "ef3f59ba",
+      "displayName": "Brand Sentiment Summary",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT * FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/gold_brand_sentiment_summary`\n",
+        "ORDER BY brand, sentiment;\n",
+        "\n",
+        "SELECT \n",
+        "  brand,\n",
+        "  SUM(CASE WHEN sentiment = 1 THEN count ELSE 0 END) AS positive_count,\n",
+        "  SUM(CASE WHEN sentiment = 0 THEN count ELSE 0 END) AS negative_count,\n",
+        "  ROUND(SUM(CASE WHEN sentiment = 1 THEN count ELSE 0 END) / SUM(count), 2) AS positive_ratio\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/gold_brand_sentiment_summary`\n",
+        "GROUP BY brand\n",
+        "ORDER BY positive_ratio DESC"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    }
+  ],
+  "pages": [
+    {
+      "name": "dac79dcf",
+      "displayName": "1",
+      "layout": [
+        {
+          "widget": {
+            "name": "bba2fa47",
+            "queries": [
+              {
+                "name": "80710bccded84e7698ae91143f239cd5",
+                "query": {
+                  "datasetName": "98772284",
+                  "fields": [
+                    {
+                      "name": "Brand",
+                      "expression": "`Brand`"
+                    },
+                    {
+                      "name": "Sentiment",
+                      "expression": "`Sentiment`"
+                    },
+                    {
+                      "name": "column_ef5e0dfb649",
+                      "expression": "SUM(`Count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Sentiment Distribution by Brand",
+                "description": "",
+                "viz_type": "CHART",
+                "serialized_options": "{\"version\":2,\"globalSeriesType\":\"column\",\"sortX\":true,\"sortY\":true,\"legend\":{\"traceorder\":\"normal\"},\"xAxis\":{\"type\":\"-\",\"labels\":{\"enabled\":true},\"title\":{\"text\":\"Brand\"}},\"yAxis\":[{\"type\":\"-\",\"title\":{\"text\":\"Count\"}},{\"type\":\"-\",\"opposite\":true}],\"alignYAxesAtZero\":true,\"error_y\":{\"type\":\"data\",\"visible\":true},\"series\":{\"stacking\":null,\"error_y\":{\"type\":\"data\",\"visible\":true}},\"seriesOptions\":{\"column_ef5e0dfb641\":{\"name\":\"Count\",\"yAxis\":0,\"type\":\"column\"},\"column_ef5e0dfb649\":{\"yAxis\":0,\"type\":\"column\"}},\"valuesOptions\":{},\"direction\":{\"type\":\"counterclockwise\"},\"sizemode\":\"diameter\",\"coefficient\":1,\"numberFormat\":\"0,0.[00000]\",\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"swappedAxes\":false,\"dateTimeFormat\":\"YYYY-MM-DD HH:mm\",\"showDataLabels\":false,\"numBins\":10,\"columnConfigurationMap\":{\"x\":{\"column\":\"Brand\",\"id\":\"column_ef5e0dfb646\"},\"series\":{\"column\":\"Sentiment\",\"id\":\"column_ef5e0dfb651\"},\"y\":[{\"id\":\"column_ef5e0dfb649\",\"column\":\"Count\",\"transform\":\"SUM\"}]},\"isAggregationOn\":true,\"hideXAxis\":false,\"reverseX\":false,\"condensed\":true,\"withRowNumber\":true}",
+                "query_name": "80710bccded84e7698ae91143f239cd5"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "4696e709",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "98772284",
+                  "fields": [
+                    {
+                      "name": "sum(Count)",
+                      "expression": "SUM(`Count`)"
+                    },
+                    {
+                      "name": "Brand",
+                      "expression": "`Brand`"
+                    },
+                    {
+                      "name": "Sentiment",
+                      "expression": "`Sentiment`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(Count)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "hideTitle": false,
+                    "title": "Sentiments"
+                  },
+                  "displayName": "Sentiments"
+                },
+                "color": {
+                  "fieldName": "Brand",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Brand"
+                },
+                "extra": [
+                  {
+                    "fieldName": "Sentiment",
+                    "displayName": "Sentiment"
+                  }
+                ]
+              },
+              "frame": {
+                "title": "Overall Sentiment Distribution",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "cbb33043",
+            "queries": [
+              {
+                "name": "80710bccded84e7698ae91143f239cd5",
+                "query": {
+                  "datasetName": "98772284",
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Table",
+                "description": "",
+                "viz_type": "TABLE",
+                "serialized_options": "{\"itemsPerPage\":25,\"condensed\":true,\"withRowNumber\":false,\"columns\":[{\"booleanValues\":[\"false\",\"true\"],\"imageUrlTemplate\":\"{{ @ }}\",\"imageTitleTemplate\":\"{{ @ }}\",\"imageWidth\":\"\",\"imageHeight\":\"\",\"linkUrlTemplate\":\"{{ @ }}\",\"linkTextTemplate\":\"{{ @ }}\",\"linkTitleTemplate\":\"{{ @ }}\",\"linkOpenInNewTab\":true,\"name\":\"Brand\",\"type\":\"string\",\"displayAs\":\"string\",\"visible\":true,\"order\":100000,\"title\":\"Brand\",\"allowSearch\":false,\"alignContent\":\"left\",\"allowHTML\":false,\"highlightLinks\":false,\"useMonospaceFont\":false,\"preserveWhitespace\":false},{\"numberFormat\":\"0\",\"booleanValues\":[\"false\",\"true\"],\"imageUrlTemplate\":\"{{ @ }}\",\"imageTitleTemplate\":\"{{ @ }}\",\"imageWidth\":\"\",\"imageHeight\":\"\",\"linkUrlTemplate\":\"{{ @ }}\",\"linkTextTemplate\":\"{{ @ }}\",\"linkTitleTemplate\":\"{{ @ }}\",\"linkOpenInNewTab\":true,\"name\":\"Sentiment\",\"type\":\"integer\",\"displayAs\":\"number\",\"visible\":true,\"order\":100001,\"title\":\"Sentiment\",\"allowSearch\":false,\"alignContent\":\"right\",\"allowHTML\":false,\"highlightLinks\":false,\"useMonospaceFont\":false,\"preserveWhitespace\":false},{\"numberFormat\":\"0\",\"booleanValues\":[\"false\",\"true\"],\"imageUrlTemplate\":\"{{ @ }}\",\"imageTitleTemplate\":\"{{ @ }}\",\"imageWidth\":\"\",\"imageHeight\":\"\",\"linkUrlTemplate\":\"{{ @ }}\",\"linkTextTemplate\":\"{{ @ }}\",\"linkTitleTemplate\":\"{{ @ }}\",\"linkOpenInNewTab\":true,\"name\":\"Count\",\"type\":\"integer\",\"displayAs\":\"number\",\"visible\":true,\"order\":100002,\"title\":\"Count\",\"allowSearch\":false,\"alignContent\":\"right\",\"allowHTML\":false,\"highlightLinks\":false,\"useMonospaceFont\":false,\"preserveWhitespace\":false}],\"version\":2}",
+                "query_name": "80710bccded84e7698ae91143f239cd5"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "94d567db",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ef3f59ba",
+                  "fields": [
+                    {
+                      "name": "positive_ratio",
+                      "expression": "`positive_ratio`"
+                    },
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    },
+                    {
+                      "name": "positive_count",
+                      "expression": "`positive_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "positive_ratio",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "hideTitle": false
+                  },
+                  "displayName": "Positive_Ratio"
+                },
+                "color": {
+                  "fieldName": "brand",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "legend": {
+                    "hide": false,
+                    "hideTitle": true
+                  },
+                  "displayName": "brand"
+                },
+                "extra": [
+                  {
+                    "fieldName": "positive_count",
+                    "displayName": "positive_count"
+                  }
+                ]
+              },
+              "frame": {
+                "title": "Positive : Negative ratio",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}

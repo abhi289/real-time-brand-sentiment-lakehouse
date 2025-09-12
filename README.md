@@ -4,7 +4,7 @@
 An end-to-end data engineering pipeline processing **1.5M+ tweets** to perform multi-dimensional sentiment analysis for major tech brands across geographic, demographic, and temporal dimensions.
 
 ## 🏗️ Architecture
-![![Pipeline Architecture](images/architecture_diagram.png)](Architecture And Results/Architecture Diagram.JPG)
+![![Pipeline Architecture](Architecture And Results/Architecture Diagram.JPG)]
 
 **Medallion Architecture Implementation:**
 - **Bronze Layer**: Raw data ingestion using Databricks AutoLoader

@@ -1,0 +1,401 @@
+{
+  "datasets": [
+    {
+      "name": "9e5b78bb",
+      "displayName": "Brand Sentiment by Age Group",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  brand,\n",
+        "  Age_group,\n",
+        "  SUM(count) as total_mentions,\n",
+        "  ROUND(SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) * 100.0 / SUM(count), 2) as positive_percentage\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/enhancements/gold/brand_demo_sentiment/`\n",
+        "WHERE brand IS NOT NULL AND Age_group IS NOT NULL AND Age_group != ''\n",
+        "GROUP BY brand, Age_group\n",
+        "HAVING total_mentions > 5\n",
+        "ORDER BY brand, \n",
+        "  CASE \n",
+        "    WHEN Age_group = '0-20' THEN 1\n",
+        "    WHEN Age_group = '21-30' THEN 2\n",
+        "    WHEN Age_group = '31-45' THEN 3\n",
+        "    WHEN Age_group = '46-60' THEN 4\n",
+        "    WHEN Age_group = '60-70' THEN 5\n",
+        "    WHEN Age_group = '70-100' THEN 6\n",
+        "    ELSE 7\n",
+        "  END"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "ed296fbc",
+      "displayName": "Brand Sentiment Comparison",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  brand,\n",
+        "  SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) as positive_mentions,\n",
+        "  SUM(CASE WHEN Sentiment_score = 0 THEN count ELSE 0 END) as negative_mentions,\n",
+        "  SUM(count) as total_mentions,\n",
+        "  ROUND(SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) * 100.0 / SUM(count), 2) as positive_percentage\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/enhancements/gold/brand_demo_sentiment/`\n",
+        "WHERE brand IS NOT NULL\n",
+        "GROUP BY brand\n",
+        "HAVING total_mentions > 0\n",
+        "ORDER BY positive_percentage DESC"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "68077e47",
+      "displayName": "Sentiment Patterns Throughout the Day",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  Time_category as time_category,\n",
+        "  sentiment,\n",
+        "  SUM(count) as mention_count,\n",
+        "  ROUND(SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) * 100.0 / SUM(count), 2) as positive_percentage\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/enhancements/gold/time_sentiment/`\n",
+        "WHERE Time_category IS NOT NULL AND Time_category != ''\n",
+        "GROUP BY Time_category, sentiment\n",
+        "ORDER BY \n",
+        "  CASE \n",
+        "    WHEN Time_category = 'morning' THEN 1\n",
+        "    WHEN Time_category = 'noon' THEN 2\n",
+        "    WHEN Time_category = 'night' THEN 3\n",
+        "    ELSE 4\n",
+        "  END,\n",
+        "  sentiment"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "23821b66",
+      "displayName": "Sentiment Distribution by Age Group",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  Age_group as age_group,\n",
+        "  Sentiment,\n",
+        "  SUM(count) as mention_count\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/enhancements/gold/brand_demo_sentiment/`\n",
+        "WHERE Age_group IS NOT NULL AND Age_group != ''\n",
+        "GROUP BY Age_group, Sentiment\n",
+        "ORDER BY \n",
+        "  CASE \n",
+        "    WHEN Age_group = '0-20' THEN 1\n",
+        "    WHEN Age_group = '21-30' THEN 2\n",
+        "    WHEN Age_group = '31-45' THEN 3\n",
+        "    WHEN Age_group = '46-60' THEN 4\n",
+        "    WHEN Age_group = '60-70' THEN 5\n",
+        "    WHEN Age_group = '70-100' THEN 6\n",
+        "    ELSE 7\n",
+        "  END,\n",
+        "  Sentiment"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    },
+    {
+      "name": "acc4079b",
+      "displayName": "Global Sentiment Distribution",
+      "queryLines": [
+        "USE CATALOG `workspace`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "SELECT \n",
+        "  Country,\n",
+        "  SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) as positive_mentions,\n",
+        "  SUM(CASE WHEN Sentiment_score = 0 THEN count ELSE 0 END) as negative_mentions,\n",
+        "  SUM(count) as total_mentions,\n",
+        "  ROUND(SUM(CASE WHEN Sentiment_score = 1 THEN count ELSE 0 END) * 100.0 / SUM(count), 2) as positive_percentage\n",
+        "FROM delta.`/Volumes/workspace/default/my_volume/Sentiment_Project/enhancements/gold/brand_demo_sentiment`\n",
+        "WHERE Country IS NOT NULL AND Country != ''\n",
+        "GROUP BY Country\n",
+        "HAVING total_mentions > 2"
+      ],
+      "catalog": "workspace",
+      "schema": "default"
+    }
+  ],
+  "pages": [
+    {
+      "name": "eca09880",
+      "displayName": "1",
+      "layout": [
+        {
+          "widget": {
+            "name": "d5262f78",
+            "queries": [
+              {
+                "name": "8bbb5772ff074c1cba3b24fd066fe5f2",
+                "query": {
+                  "datasetName": "9e5b78bb",
+                  "fields": [
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    },
+                    {
+                      "name": "Age_group",
+                      "expression": "`Age_group`"
+                    },
+                    {
+                      "name": "column_8448b6b610555",
+                      "expression": "SUM(`positive_percentage`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Brand Sentiment by Age Group",
+                "description": "",
+                "viz_type": "CHART",
+                "serialized_options": "{\"version\":2,\"globalSeriesType\":\"heatmap\",\"sortX\":true,\"sortY\":true,\"legend\":{\"traceorder\":\"normal\",\"title\":\"Positive Percentage\"},\"xAxis\":{\"type\":\"-\",\"labels\":{\"enabled\":true},\"title\":{\"text\":\"Brands\"}},\"yAxis\":[{\"type\":\"-\"},{\"type\":\"-\",\"opposite\":true}],\"alignYAxesAtZero\":true,\"error_y\":{\"type\":\"data\",\"visible\":true},\"series\":{\"stacking\":null,\"error_y\":{\"type\":\"data\",\"visible\":true}},\"seriesOptions\":{\"column_8448b6b610553\":{\"yAxis\":0,\"type\":\"heatmap\"}},\"valuesOptions\":{},\"direction\":{\"type\":\"counterclockwise\"},\"sizemode\":\"diameter\",\"coefficient\":1,\"numberFormat\":\"0,0.[00000]\",\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"swappedAxes\":false,\"dateTimeFormat\":\"YYYY-MM-DD HH:mm\",\"showDataLabels\":false,\"columnConfigurationMap\":{\"x\":{\"column\":\"brand\",\"id\":\"column_8448b6b610552\"},\"y\":[{\"column\":\"Age_group\",\"id\":\"column_8448b6b610553\"}],\"zVal\":{\"id\":\"column_8448b6b610555\",\"column\":\"positive_percentage\",\"transform\":\"SUM\"}},\"isAggregationOn\":true,\"colorScheme\":\"Reds\",\"condensed\":true,\"withRowNumber\":true}",
+                "query_name": "8bbb5772ff074c1cba3b24fd066fe5f2"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "dd0050e5",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ed296fbc",
+                  "fields": [
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    },
+                    {
+                      "name": "sum(positive_percentage)",
+                      "expression": "SUM(`positive_percentage`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "brand",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "axis": {
+                    "title": "Brands"
+                  },
+                  "displayName": "Brands"
+                },
+                "y": {
+                  "fieldName": "sum(positive_percentage)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "axis": {
+                    "title": "Positive Percentage"
+                  },
+                  "displayName": "Positive Percentage"
+                }
+              },
+              "frame": {
+                "title": "Brand Sentiment Comparison",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "mark": {
+                "colors": [
+                  "#00A972"
+                ],
+                "layout": "group"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "a6e92b40",
+            "queries": [
+              {
+                "name": "c6b742a335034f56ac7d74b7e88e31f0",
+                "query": {
+                  "datasetName": "68077e47",
+                  "fields": [
+                    {
+                      "name": "column_8448b6b68603",
+                      "expression": "SUM(`mention_count`)"
+                    },
+                    {
+                      "name": "time_category",
+                      "expression": "`time_category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Sentiment Patterns Throughout the Day",
+                "description": "",
+                "viz_type": "CHART",
+                "serialized_options": "{\"version\":2,\"globalSeriesType\":\"column\",\"sortX\":true,\"sortY\":true,\"legend\":{\"traceorder\":\"normal\"},\"xAxis\":{\"type\":\"-\",\"labels\":{\"enabled\":true}},\"yAxis\":[{\"type\":\"-\",\"title\":{\"text\":\"Sentiment Count\"}},{\"type\":\"-\",\"opposite\":true}],\"alignYAxesAtZero\":true,\"error_y\":{\"type\":\"data\",\"visible\":true},\"series\":{\"stacking\":null,\"error_y\":{\"type\":\"data\",\"visible\":true}},\"seriesOptions\":{\"column_8448b6b68603\":{\"yAxis\":0,\"type\":\"column\"},\"morning\":{\"color\":\"#FFAB00\"},\"night\":{\"color\":\"#077A9D\"},\"noon\":{\"color\":\"#99DDB4\"}},\"valuesOptions\":{},\"direction\":{\"type\":\"counterclockwise\"},\"sizemode\":\"diameter\",\"coefficient\":1,\"numberFormat\":\"0,0.[00000]\",\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"swappedAxes\":false,\"dateTimeFormat\":\"YYYY-MM-DD HH:mm\",\"showDataLabels\":false,\"columnConfigurationMap\":{\"y\":[{\"id\":\"column_8448b6b68603\",\"column\":\"mention_count\",\"transform\":\"SUM\"}],\"series\":{\"column\":\"time_category\",\"id\":\"column_8448b6b68614\"}},\"isAggregationOn\":true}",
+                "query_name": "c6b742a335034f56ac7d74b7e88e31f0"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "ce994911",
+            "queries": [
+              {
+                "name": "eda6551e23a84936b0eac56bb7b10246",
+                "query": {
+                  "datasetName": "23821b66",
+                  "fields": [
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    },
+                    {
+                      "name": "Sentiment",
+                      "expression": "`Sentiment`"
+                    },
+                    {
+                      "name": "column_8448b6b67502",
+                      "expression": "SUM(`mention_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Sentiment Distribution by Age Group",
+                "description": "",
+                "viz_type": "CHART",
+                "serialized_options": "{\"version\":2,\"globalSeriesType\":\"column\",\"sortX\":true,\"sortY\":true,\"legend\":{\"traceorder\":\"normal\"},\"xAxis\":{\"type\":\"-\",\"labels\":{\"enabled\":true}},\"yAxis\":[{\"type\":\"-\"},{\"type\":\"-\",\"opposite\":true}],\"alignYAxesAtZero\":true,\"error_y\":{\"type\":\"data\",\"visible\":true},\"series\":{\"stacking\":\"stack\",\"error_y\":{\"type\":\"data\",\"visible\":true}},\"seriesOptions\":{\"column_8448b6b67502\":{\"name\":\"mention_count\",\"yAxis\":0,\"type\":\"column\"}},\"valuesOptions\":{},\"direction\":{\"type\":\"counterclockwise\"},\"sizemode\":\"diameter\",\"coefficient\":1,\"numberFormat\":\"0,0.[00000]\",\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"swappedAxes\":false,\"dateTimeFormat\":\"YYYY-MM-DD HH:mm\",\"showDataLabels\":false,\"columnConfigurationMap\":{\"x\":{\"column\":\"age_group\",\"id\":\"column_8448b6b67500\"},\"series\":{\"column\":\"Sentiment\",\"id\":\"column_8448b6b67505\"},\"y\":[{\"column\":\"mention_count\",\"transform\":\"SUM\",\"id\":\"column_8448b6b67502\"}]},\"isAggregationOn\":true,\"reverseX\":false,\"hideXAxis\":false,\"condensed\":true,\"withRowNumber\":true}",
+                "query_name": "eda6551e23a84936b0eac56bb7b10246"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "76f73abb",
+            "queries": [
+              {
+                "name": "842794cfa10c4154a75fd8fbf9e26b2b",
+                "query": {
+                  "datasetName": "acc4079b",
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Global Sentiment Distribution",
+                "description": "",
+                "viz_type": "MAP",
+                "serialized_options": "{\"latColName\":\"positive_percentage\",\"lonColName\":\"total_mentions\",\"classify\":\"Country\",\"groups\":{},\"mapTileUrl\":\"//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\",\"clusterMarkers\":false,\"customizeMarkers\":false,\"iconShape\":\"marker\",\"iconFont\":\"circle\",\"foregroundColor\":\"#ffffff\",\"backgroundColor\":\"#356AFF\",\"borderColor\":\"#356AFF\",\"bounds\":null,\"tooltip\":{\"enabled\":false,\"template\":\"\"},\"popup\":{\"enabled\":true,\"template\":\"\"},\"condensed\":true,\"withRowNumber\":true}",
+                "query_name": "842794cfa10c4154a75fd8fbf9e26b2b"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#F4F2ED",
+        "dark": "#1F1E1D"
+      },
+      "widgetBackgroundColor": {
+        "light": "#EBE9E2",
+        "dark": "#1B1817"
+      },
+      "widgetBorderColor": {
+        "light": "#D5CEC3",
+        "dark": "#2F2E2B"
+      },
+      "fontColor": {
+        "light": "#30270C",
+        "dark": "#FAFBF9"
+      },
+      "selectionColor": {
+        "light": "#5F7E52",
+        "dark": "#7A8F3E"
+      },
+      "visualizationColors": [
+        "#1A4F27",
+        "#B35900",
+        "#3A9BDC",
+        "#7A8F3E",
+        "#E8B200",
+        "#767676",
+        "#C23B22"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    }
+  }
+}
